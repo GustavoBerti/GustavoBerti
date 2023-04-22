@@ -1,0 +1,136 @@
+/*/*O cliente Xavier solicitou para o seu grupo o desenvolvimento de uma aplicação
+básica de banco com diversas funcionalidades, segue a lista de funcionalidades
+solicitadas:
+1 – Primeiramente, o sistema deve guardar 2 usuários com suas respectivas
+senhas vinculadas (não se preocupe com a segurança da informação neste
+momento).
+2 – Cada usuário deve começar com um saldo iniciado de forma randômica de
+100 até 10.000.
+3 – O sistema deve iniciar pedindo usuário e senha, e validar se os dois estão
+corretos, caso sim, ele vai disponibilizar um conjunto de operações que poderão
+ser realizadas.
+4 – As operações serão as seguintes: depositar, sacar, transferir, verificar o saldo
+e fazer logoff.
+4.1 – Para depositar é necessário colocar o valor e acrescentar ao saldo;
+4.2 – Para sacar é necessário verificar se existe saldo suficiente para sacar o
+valor solicitado;
+4.3 – Para transferir somente poderá transferir para o outro usuário cadastrado,
+então será necessário validar o usuário e o saldo.
+4.4 – Para verificar o saldo, simplesmente mostrará o saldo da conta na tela.
+5 – O programa deve ficar repetindo as opções até que seja digitada uma opção
+inexistente e neste caso, deverá ser encerrado.
+*/
+
+package Banco.pkg2;
+
+import javax.swing.JOptionPane;
+
+
+public class Banco {
+    
+    public static void main(String[] args) {
+        String usuario1, usuario2, senhausuario1, senhausuario2;;
+        int saldo1 = (int) (Math.random() * 9900) + 100;
+        int saldo2 = (int) (Math.random() * 9900) + 100;
+
+        usuario1 = JOptionPane.showInputDialog("Digite o nome do Usuario 1: ");
+        senhausuario1 = JOptionPane.showInputDialog("Digite a senha do usuario 1: ");
+
+        usuario2 = JOptionPane.showInputDialog("Digite o Usuario numero 2: ");
+        senhausuario2 = JOptionPane.showInputDialog("Digite a senha do usuario 2: ");
+
+        boolean logado = false;
+        String usuario = "", senha;
+        while (!logado) {
+            usuario = JOptionPane.showInputDialog("Digite o nome para entrar no sistema: ");
+            senha = JOptionPane.showInputDialog("Digite a senhar para entrar no sistema: ");
+
+            if (usuario.equals(usuario1) && senha.equals(senhausuario1)) {
+                logado = true;
+
+            } else if (usuario.equals(usuario2) && senha.equals(senhausuario2)) {
+                logado = true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Usuario ou senha Invalido\n    Tente Novamente");
+            }
+        }
+        int opcao;
+        do {
+            opcao = Integer.parseInt(JOptionPane.showInputDialog(null,
+                    "1- Depositar\n"
+                    + "2- Sacar\n"
+                    + "3- Transferir\n"
+                    + "4- Vereficar saldo\n"
+                    + "5- Fazer loggof\n"
+                    + "6- Sair"));
+
+            switch (opcao) {
+                case 1:
+                    int valor = Integer.parseInt(JOptionPane.showInputDialog("Informe o valor a depositar"));
+                    if (usuario.equals(usuario1)) {
+                        saldo1 += valor;
+                    } else {
+                        saldo2 += valor;
+                    }
+                    break;
+
+                case 2:
+                    int valor1 = Integer.parseInt(JOptionPane.showInputDialog("Informe o valor a sacar"));
+                    int saldoAtual = 0;
+
+                    if (usuario.equals(usuario1)) {
+                        saldoAtual = saldo1;
+                    } else {
+                        saldoAtual = saldo2;
+                    }
+                    if (valor1 <= saldoAtual) {
+                        if (usuario.equals(usuario1)) {
+                            saldo1 -= valor1;
+                        } else {
+                            saldo2 -= valor1;
+                        }
+                        JOptionPane.showMessageDialog(null, "Saque com sucesso");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Saldo Insuficiente");
+                    }
+                    break;
+                    
+                case 3:
+                int valorTransferencia = Integer.parseInt(JOptionPane.showInputDialog("Informe o valor a transferir"));
+                String destinatario = JOptionPane.showInputDialog("Informe o nome do destinatário");
+
+                if (usuario.equals(usuario1)) {
+                    if (valorTransferencia <= saldo1) {
+                        saldo1 -= valorTransferencia;
+                        saldo2 += valorTransferencia;
+                        JOptionPane.showMessageDialog(null, "Transferência realizada com sucesso para " + destinatario);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Saldo insuficiente para realizar a transferência");
+                    }
+                } else {
+                    if (valorTransferencia <= saldo2) {
+                        saldo2 -= valorTransferencia;
+                        saldo1 += valorTransferencia;
+                        JOptionPane.showMessageDialog(null, "Transferência realizada com sucesso para " + destinatario);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Saldo insuficiente para realizar a transferência");
+                    }
+                }
+                break;
+                case 4:
+                int saldoAtual1 = 0;
+                if (usuario.equals(usuario1)) {
+                    saldoAtual1 = saldo1;
+                } else {
+                    saldoAtual1 = saldo2;
+                }
+                JOptionPane.showMessageDialog(null, "Saldo atual: " + saldoAtual1);
+                break;
+                
+                case 5:
+                    JOptionPane.showMessageDialog(null, "Logoff realizado com sucesso!");
+                    break;
+            }
+        } while (opcao != 6);
+    }
+}
