@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <string.h>
+
+void imprimirTabuleiro(char tabuleiro[3][3]) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            printf("%c ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+char verificarVencedor(char tabuleiro[3][3]) {
+    for (int i = 0; i < 3; i++) {
+        if (tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][1] == tabuleiro[i][2]) {
+            if (tabuleiro[i][0] != ' ')
+                return tabuleiro[i][0];
+        }
+
+        if (tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[1][i] == tabuleiro[2][i]) {
+            if (tabuleiro[0][i] != ' ')
+                return tabuleiro[0][i];
+        }
+    }
+
+    if ((tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2]) ||
+        (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0])) {
+        if (tabuleiro[1][1] != ' ')
+            return tabuleiro[1][1];
+    }
+
+    return ' ';
+}
+
+int main() {
+    char tabuleiro[3][3];
+    int linha, coluna;
+    char jogadorAtual = 'X';
+    int jogadasRestantes = 9;
+
+    memset(tabuleiro, ' ', sizeof(tabuleiro));
+
+    printf("Jogo da Velha\n");
+    printf("Instrucoes: Insira o numero da linha (1 a 3) e o numero da coluna (1 a 3) para fazer sua jogada.\n");
+
+    while (jogadasRestantes > 0) {
+        imprimirTabuleiro(tabuleiro);
+
+        printf("Jogador %c, faca sua jogada (linha coluna): ", jogadorAtual);
+        scanf("%d %d", &linha, &coluna);
+
+        if (linha < 1 || linha > 3 || coluna < 1 || coluna > 3 || tabuleiro[linha - 1][coluna - 1] != ' ') {
+            printf("Jogada invalida! Tente novamente.\n");
+            continue;
+        }
+
+        tabuleiro[linha - 1][coluna - 1] = jogadorAtual;
+        jogadasRestantes--;
+
+        char vencedor = verificarVencedor(tabuleiro);
+        if (vencedor != ' ') {
+            imprimirTabuleiro(tabuleiro);
+            printf("Parabens, jogador %c! Voce venceu!\n", vencedor);
+            return 0;
+        }
+
+        jogadorAtual = (jogadorAtual == 'X') ? 'O' : 'X';
+    }
+
+    imprimirTabuleiro(tabuleiro);
+    printf("Empate! O jogo terminou.\n");
+
+    return 0;
+}
+
+// GUSTAVO BERTI 
