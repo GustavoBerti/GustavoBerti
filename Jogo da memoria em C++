@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+const int TAMANHO_GRID = 4;
+const int TOTAL_CARTAS = TAMANHO_GRID * TAMANHO_GRID / 2;
+
+char grid[TAMANHO_GRID][TAMANHO_GRID];
+bool revelado[TAMANHO_GRID][TAMANHO_GRID];
+
+void inicializarGrid() {
+    char cartas[TOTAL_CARTAS] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+    int contadorCartas[TOTAL_CARTAS] = {0};
+
+    for (int i = 0; i < TAMANHO_GRID; ++i) {
+        for (int j = 0; j < TAMANHO_GRID; ++j) {
+            int indiceCarta;
+            do {
+                indiceCarta = rand() % TOTAL_CARTAS;
+            } while (contadorCartas[indiceCarta] >= 2);
+
+            grid[i][j] = cartas[indiceCarta];
+            contadorCartas[indiceCarta]++;
+            revelado[i][j] = false;
+        }
+    }
+}
+
+void imprimirGrid() {
+    for (int i = 0; i < TAMANHO_GRID; ++i) {
+        for (int j = 0; j < TAMANHO_GRID; ++j) {
+            if (revelado[i][j]) {
+                printf("%c ", grid[i][j]);
+            } else {
+                printf("* ");
+            }
+        }
+        printf("\n");
+    }
+}
+
+bool ganhou() {
+    for (int i = 0; i < TAMANHO_GRID; ++i) {
+        for (int j = 0; j < TAMANHO_GRID; ++j) {
+            if (!revelado[i][j]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+int main() {
+    srand(time(NULL));
+    inicializarGrid();
+    int jogadas = 0;
+
+    while (!ganhou()) {
+        printf("Jogadas: %d\n", jogadas);
+        imprimirGrid();
+
+        int linha1, coluna1, linha2, coluna2;
+
+        printf("Digite a linha e a coluna da primeira carta (exemplo: 1 2): ");
+        scanf("%d %d", &linha1, &coluna1);
+
+        printf("Digite a linha e a coluna da segunda carta (exemplo: 3 4): ");
+        scanf("%d %d", &linha2, &coluna2);
+
+        if (linha1 < 1 || linha1 > TAMANHO_GRID || coluna1 < 1 || coluna1 > TAMANHO_GRID ||
+            linha2 < 1 || linha2 > TAMANHO_GRID || coluna2 < 1 || coluna2 > TAMANHO_GRID ||
+            revelado[linha1 - 1][coluna1 - 1] || revelado[linha2 - 1][coluna2 - 1]) {
+            printf("Jogada inválida! Tente novamente.\n");
+            continue;
+        }
+
+        linha1--;
+        coluna1--;
+        linha2--;
+        coluna2--;
+
+        if (grid[linha1][coluna1] == grid[linha2][coluna2]) {
+            printf("Par encontrado! Você acertou.\n");
+            revelado[linha1][coluna1] = true;
+            revelado[linha2][coluna2] = true;
+        } else {
+            printf("Não é um par. Tente novamente.\n");
+        }
+
+        jogadas++;
+    }
+
+    printf("Parabéns! Você ganhou em %d jogadas.\n", jogadas);
+    return 0;
+}
+
+
+//gustavo berti
